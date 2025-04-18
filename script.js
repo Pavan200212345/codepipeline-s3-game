@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'card4', img: 'images/rollsafe.png' },
         { name: 'card4', img: 'images/rollsafe.png' },
         { name: 'card5', img: 'images/success.png' },
-        { name: 'card5', img: 'images/success.png' },
-        // ...add more pairs as needed
+        { name: 'card5', img: 'images/success.png' }
     ];
 
     function shuffle(array) {
@@ -27,49 +26,67 @@ document.addEventListener('DOMContentLoaded', () => {
         shuffle(cardArray);
         grid.innerHTML = '';
         cardsWon = [];
+        cardsChosen = [];
+        cardsChosenId = [];
 
-        for (let i = 0; i < cardArray.length; i++) {
-            const card = document.createElement('img');
-            card.setAttribute('src', 'images/blank.png');
-            card.setAttribute('data-id', i);
-            card.addEventListener('click', flipCard);
+        cardArray.forEach((cardObj, index) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.setAttribute('data-id', index);
+
+            const front = document.createElement('div');
+            front.classList.add('card-face', 'card-front');
+            front.textContent = '?';
+
+            const back = document.createElement('div');
+            back.classList.add('card-face', 'card-back');
+            const img = document.createElement('img');
+            img.src = cardObj.img;
+            back.appendChild(img);
+
+            card.appendChild(front);
+            card.appendChild(back);
             grid.appendChild(card);
-        }
+
+            card.addEventListener('click', flipCard);
+        });
     }
 
     function flipCard() {
-        let cardId = this.getAttribute('data-id');
-        if (!cardsChosenId.includes(cardId)) {
-            cardsChosen.push(cardArray[cardId].name);
-            cardsChosenId.push(cardId);
-            this.setAttribute('src', cardArray[cardId].img);
-            if (cardsChosen.length === 2) {
-                setTimeout(checkForMatch, 500);
-            }
+        const card = this;
+        const cardId = card.getAttribute('data-id');
+
+        if (cardsChosenId.includes(cardId) || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+        card.classList.add('flipped');
+        cardsChosen.push(cardArray[cardId].name);
+        cardsChosenId.push(cardId);
+
+        if (cardsChosen.length === 2) {
+            setTimeout(checkForMatch, 800);
         }
     }
 
     function checkForMatch() {
-        const cards = document.querySelectorAll('#game-board img');
-        const firstCardId = cardsChosenId[0];
-        const secondCardId = cardsChosenId[1];
+        const allCards = document.querySelectorAll('.card');
+        const [firstId, secondId] = cardsChosenId;
 
-        if (cardsChosen[0] === cardsChosen[1] && firstCardId !== secondCardId) {
-            cards[firstCardId].style.visibility = 'hidden';
-            cards[secondCardId].style.visibility = 'hidden';
-            cards[firstCardId].removeEventListener('click', flipCard);
-            cards[secondCardId].removeEventListener('click', flipCard);
-            cardsWon.push(cardsChosen);
+        if (cardsChosen[0] === cardsChosen[1] && firstId !== secondId) {
+            allCards[firstId].classList.add('matched');
+            allCards[secondId].classList.add('matched');
+            allCards[firstId].style.pointerEvents = 'none';
+            allCards[secondId].style.pointerEvents = 'none';
+            cardsWon.push(cardsChosen[0]);
         } else {
-            cards[firstCardId].setAttribute('src', 'images/blank.png');
-            cards[secondCardId].setAttribute('src', 'images/blank.png');
+            allCards[firstId].classList.remove('flipped');
+            allCards[secondId].classList.remove('flipped');
         }
 
         cardsChosen = [];
         cardsChosenId = [];
 
         if (cardsWon.length === cardArray.length / 2) {
-            alert('Congratulations! You found them all!');
+            setTimeout(() => alert('🎉 Congratulations! You matched them all!'), 300);
         }
     }
 
