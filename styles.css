@@ -1,76 +1,136 @@
 body {
-    font-family: 'Roboto', sans-serif; 
-    background-color: #282c34; 
-    color: #ffffff; 
-    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle, #111827 20%, #0f172a 100%);
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    perspective: 1500px;
 }
 
 .container {
-    width: auto;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #3c404d; 
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); 
-    border-radius: 15px; 
+    background: rgba(20, 20, 40, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 50px;
+    max-width: 1000px;
+    width: 90%;
+    box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.5),
+        inset 0 0 50px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    transform: rotateX(2deg);
 }
 
-h1 {
-    color: white; 
+.neon-text {
+    font-size: 48px;
+    background: linear-gradient(90deg, #00fff0, #ff00e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+        0 0 5px #0ff,
+        0 0 15px #0ff,
+        0 0 30px #f0f,
+        0 0 50px #0ff;
+    margin-bottom: 20px;
 }
 
 .instructions {
-    font-size: 20px;
+    font-size: 18px;
+    color: #cbd5e1;
     margin-bottom: 30px;
-    color: #adbac7;
-}
-
-#game-board {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 20px;
-    justify-content: center;
-    padding: 20px;
-}
-
-.card {
-    width: 211.8px;
-    height: 166.2px;
-    background-color: #565c6f;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.card img {
-    width: 100%;
-    height: auto;
-    visibility: hidden; /* Hide images by default */
-    display: block;
-}
-
-.card.show img {
-    visibility: visible; /* Show image when card is flipped */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
 #start-game {
-    background-color: #4caf50;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
     font-size: 18px;
-    transition: background-color 0.3s, transform 0.3s;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #start-game:hover {
-    background-color: #43a047; /* Darker on hover */
-    transform: scale(1.05); /* Slightly enlarges on hover */
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+    perspective: 1200px;
+}
+
+.card {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+    cursor: pointer;
+    border-radius: 15px;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.5),
+        0 0 10px rgba(0, 255, 255, 0.3);
+    background: #1f2937;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-front {
+    background: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #94a3b8;
+    border: 2px solid #00fff0;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    background: #fff;
+}
+
+.card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card.matched {
+    box-shadow: 0 0 15px #22c55e;
+    transform: scale(1.05) rotateY(180deg);
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .neon-text {
+        font-size: 36px;
+    }
+
+    .instructions {
+        font-size: 16px;
+    }
 }
